@@ -1,0 +1,7 @@
+# Keep shell scripts LF even on Windows checkouts (they run on Android/Linux)
+*.sh      text eol=lf
+*.java    text eol=lf
+*.md      text eol=lf
+*.py      text eol=lf
+*.jar     binary
+*.apk     binary
