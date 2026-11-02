@@ -1,0 +1,13 @@
+# Vendor blobs (not committed) — see module/fetch-blobs.md
+module/nfc-dada-pudding/blobs/*
+!module/nfc-dada-pudding/blobs/README.md
+
+# Build outputs
+module/*.zip
+*.idsig
+*.log
+*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db
