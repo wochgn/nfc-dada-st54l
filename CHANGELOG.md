@@ -16,3 +16,14 @@
   → DE `009000`（19.3 s）；APC 实验档 `+2` 解决 `68CA` 低电压。
 - 发布 KernelSU 持久化模块 `nfc-dada-pudding` v1.1（开机自动 overlay、标签校验、
   失败不挂载、late_start 兜底），并通过两次真实重启与重启后刷屏验证。
+
+## 2026-11-12 · v1.2 — 系统 OTA 后 NFC 故障修复
+
+- 用户 OTA 到 `OS4.0.3.0.XOCCNXM` 后 NFC 打不开；诊断为模块 v1.1 的 `service.sh`
+  在开机启动过程中 kill HAL / `com.android.nfc`，导致 NfcService startup ANR、
+  `nfc` 系统服务未注册（详见 [docs/OTA-OS4.0.3.0-incident.md](docs/OTA-OS4.0.3.0-incident.md)）。
+- 确认 OTA **未改动**原厂 `/odm` NFC 文件（5 个哈希与旧版一致），非固件/兼容性损坏。
+- 模块 v1.2：移除所有开机阶段的服务重启逻辑；`service.sh` 只验证/记录，
+  `action.sh` 只重放 overlay；`post-fs-data.sh` 增加“已挂载即退出”的幂等判断。
+- 验证：OS4.0.3.0 重启后 `mState=on`、HAL pid 正常、芯片 FW `02.07.2128`、
+  `0x13` 返回 `1300`，NFC 与刷屏能力恢复。

@@ -5,10 +5,12 @@ Xiaomi 15 `dada` 的 `/odm`，使 7A 短帧刷屏能力在重启后自动生效�
 
 - **不写任何分区**：只做 tmpfs + `mount --bind`；
 - `post-fs-data.sh`：复制 blobs → `chcon` → `ls -lZ` **校验标签**；任一标签不对
-  则**整体不挂载**（原厂 NFC 保持可用）；
-- `service.sh`（late_start）：校验/兜底重挂，重启 HAL 与 `com.android.nfc`，
-  检查 `dumpsys nfc`，必要时重试一次；
-- `action.sh`：KernelSU 管理器“动作”按钮，重放上述流程；
+  则**整体不挂载**（原厂 NFC 保持可用）；已挂载时幂等退出；
+- `service.sh`（late_start）：**v1.2 起只验证/记录**（overlay 状态、`dumpsys nfc`），
+  **不再 kill/重启 HAL 或 `com.android.nfc`** —— 旧版在 OTA 后的启动时序中重启服务
+  导致 NfcService startup ANR，NFC 系统服务未注册（详见
+  [../docs/OTA-OS4.0.3.0-incident.md](../docs/OTA-OS4.0.3.0-incident.md)）；
+- `action.sh`：KernelSU 管理器“动作”按钮，只重放 overlay，不重启服务；
 - 日志：`/data/local/tmp/nfc-dada-pudding.log`。
 
 ## 目录

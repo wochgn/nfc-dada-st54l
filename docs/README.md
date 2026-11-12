@@ -4,6 +4,7 @@
 |---|---|
 | [SUCCESS-20261102.md](SUCCESS-20261102.md) | **最终成功记录**：完整刷屏日志、复现步骤、持久化模块开机验证 |
 | [CRASH-ANALYSIS-20261102.md](CRASH-ANALYSIS-20261102.md) | 事故分析：照搬小米 15 Pro（Android 16）模块后 NFC 打不开的根因（SELinux 标签） |
+| [OTA-OS4.0.3.0-incident.md](OTA-OS4.0.3.0-incident.md) | 事故分析：系统 OTA 到 OS4.0.3.0 后 NFC 打不开（模块 v1.1 启动时 kill 服务 → NfcService startup ANR；v1.2 修复） |
 | [probe-findings.md](probe-findings.md) | 前期探测记录：ST54L 原厂固件拒绝 7A、标准轮询失败、TEST_DATA 无 RF 证据等 |
 | [st-nci-notes.md](st-nci-notes.md) | ST54L 厂商 NCI（GID/OID、TLV、自定义轮询帧、RF 配置 CRC）笔记 |
 | [protocol-spec.md](protocol-spec.md) | 屏端协议：D1 TLV、D8/PIN、D3/LZO1X、D4/DE、A0/A1 打包 |

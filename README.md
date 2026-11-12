@@ -12,7 +12,7 @@
 | 项目 | 值 |
 |---|---|
 | 手机 | Xiaomi 15 `dada`（24129PN74C） |
-| 系统 | Android 17 / HyperOS `OS4.0.0.23.XOCCNXM` |
+| 系统 | Android 17 / HyperOS `OS4.0.0.23` 与 `OS4.0.3.0.XOCCNXM`（均已验证；后者需模块 v1.2） |
 | NFC 控制器 | STMicroelectronics **ST54L**（siliconRev 3） |
 | Root | KernelSU（模块依赖 KernelSU/Magisk API） |
 | 屏幕壳 | 华为 552×768 四色 NFC 墨水屏（A1，C0=201EA001，扫描方向 00） |
@@ -29,7 +29,7 @@
 1. **运行时 overlay 小米 17（pudding OS3.0.319）的 ST54L NFC 栈** 到 `/odm`（5 个文件，tmpfs + `chcon` + `mount --bind`，不写分区）：
    - HAL 与 lib 启动时自动把控制器固件从 `02.04.1188` 升级到 **`02.07.2128`**；
    - `0x13` 配置 `7A` 短帧返回 `1300`，`0x15` 读回 `012A020A7A`。
-2. **KernelSU 持久化模块 `nfc-dada-pudding` v1.1**：开机 `post-fs-data` 自动执行上面的 overlay，并做**标签校验**（失败则不挂载、保留原厂 NFC）；`late_start` 兜底并重启 HAL/NFC。
+2. **KernelSU 持久化模块 `nfc-dada-pudding` v1.2**：开机 `post-fs-data` 自动执行上面的 overlay，并做**标签校验**（失败则不挂载、保留原厂 NFC）。v1.2 起**不在开机阶段 kill/重启 HAL 或 NfcService**（v1.1 在系统 OTA 后因此导致 NfcService startup ANR，见 [docs/OTA-OS4.0.3.0-incident.md](docs/OTA-OS4.0.3.0-incident.md)）。
 3. **改造版 App `InkNfcLab-0.5.4`**：
    - ISO-DEP 连接后**保场充能 2000 ms** 再发 D1（原版直接发 D1 会收到 `6401/6403`）；
    - D1 失败最多重试 3 次；
@@ -120,6 +120,7 @@ adb install -r app/InkNfcLab-0.5.4.apk
 - 仅验证了 Xiaomi 15 `dada` + Android 17 + 华为 A1 四色 552×768 壳；其他机型/屏型需重新核对 blobs 与协议。
 - 刷图依赖 App 内 **APC +2**（实验档，耗电略增）；贴合位置/压力影响供电，`68CA` 低电压时需调整线圈位置重试。
 - 首次开机 overlay 生效时会触发一次控制器固件升级（约几秒）；期间 NFC 任务可能失败，属正常。
+- **系统 OTA 注意**：v1.1 模块在 OTA 到 `OS4.0.3.0` 后会导致 NFC 打不开（启动时序变化 + 模块在开机时重启 HAL/NfcService → NfcService startup ANR）；**v1.2 已修复**，OTA 后请先更新到 v1.2 再重启。详见 [docs/OTA-OS4.0.3.0-incident.md](docs/OTA-OS4.0.3.0-incident.md)。
 - `FINAL_REPORT.md` 是前期（2026-11-02 白天）的完整调查报告，其“原厂不可行”的初步结论已被后续实验推翻，保留作历史记录。
 
 ## 许可与致谢
